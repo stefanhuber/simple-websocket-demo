@@ -1,0 +1,21 @@
+{
+    "name": "stefanhuber.at/simple-chat-application",
+    "authors": [
+        {
+            "name": "Stefan Huber",
+            "email": "mail@stefanhuber.at"
+        }
+    ],
+    "require": {
+        "cboden/ratchet": "^0.4.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "scripts": {
+        "socket": "php ./start.php" ,
+        "server": "php -S localhost:8080 -t ./public"
+    }
+}

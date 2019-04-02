@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Chat App</title>
+    <style>
+        html, body {
+            margin:0;
+            height:100%;
+            font-family: sans-serif;
+        }
+        body {
+            display:flex;
+            flex-direction: column;
+            margin:0;
+        }
+        .chat-history {
+            margin:10px;
+            border:1px solid #ddd;
+            padding:10px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            flex-basis: 100%;
+            line-height:20px;
+        }
+        .chat-input {
+            background: #ddd;
+            padding: 20px 10px;
+            flex-basis:100px;
+            display:flex;
+        }
+        input, textarea {
+            border: 1px solid black;
+            background: white;
+            padding: 3px;
+        }
+        [name="username"] {
+            flex:10%;
+        }
+        [name="message"] {
+            flex:80%;
+        }
+        button {
+            border: 1px solid black;
+            flex:10%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-history">
+</div>
+<div class="chat-input">
+    <input name="username" placeholder="Enter username">
+    <textarea name="message" placeholder="Enter message"></textarea>
+    <button>Send</button>
+</div>
+
+<script>
+    let connection = new WebSocket("ws://socket.chat.local");
+    let createMessage = function() {
+        let username = document.querySelector('[name="username"]').value;
+        let messageElement = document.querySelector('[name="message"]');
+
+        if (!username) {
+            alert("Please add a username!");
+        } else if (!messageElement.value) {
+            alert("Please add a message!");
+        } else {
+            connection.send(username + ": " + messageElement.value);
+            messageElement.value = "";
+        }
+    };
+
+    connection.onopen = function(e) {
+        console.log("connection established");
+    };
+    connection.onclose = function() {
+        console.log("connection closed");
+    };
+    connection.onmessage = function(e) {
+        let chat = document.querySelector('div');
+        chat.innerHTML = e.data + "<br>" + chat.innerHTML;
+    };
+
+    document.querySelector("button").addEventListener("click", createMessage);
+    document.querySelector('[name="message"]').addEventListener("keypress", function(e) {
+        if (e.key == "Enter") {
+            createMessage();
+        }
+    });
+</script>
+</body>
+</html>
